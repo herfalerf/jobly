@@ -44,21 +44,27 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
+  //Allows for search filters in object form e.g. {name: "company", minEmployees: 25, maxEmployees: 1000} to be entered as a parameter.
+
   static async findAll(searchFilters = {}) {
+    //creates the basic query string which we will build the rest of the query on
     let query = `SELECT handle,
                         name,
                         description,
                         num_employees AS "numEmployees",
                         logo_url AS "logoUrl"
                 FROM companies`;
+    //empy arrays to hold WHERE expressions and the associated values
     let whereExpressions = [];
     let queryValues = [];
+
     const { minEmployees, maxEmployees, name } = searchFilters;
 
     if (minEmployees > maxEmployees) {
       throw new BadRequestError("Min employees cannot be great than max");
     }
 
+    //depending on query values that are present in searchFilters object, add the value to the queryValues array and add the WHERE string to the whereExpressions array
     if (minEmployees !== undefined) {
       queryValues.push(minEmployees);
       whereExpressions.push(`num_employees >= $${queryValues.length}`);
@@ -72,10 +78,12 @@ class Company {
       whereExpressions.push(`name ILIKE $${queryValues.lengtrh}`);
     }
 
+    //if WHERE expressions exist add WHERE string and concat whereExpressions with AND in between
     if (whereExpressions.length > 0) {
       query += " WHERE " + whereExpressions.join(" AND ");
     }
 
+    // add the ORDER BY string and complete the query
     query += " ORDER BY name";
     const companiesRes = await db.query(query, queryValues);
     return companiesRes.rows;
