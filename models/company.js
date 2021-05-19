@@ -69,13 +69,15 @@ class Company {
       queryValues.push(minEmployees);
       whereExpressions.push(`num_employees >= $${queryValues.length}`);
     }
+
     if (maxEmployees !== undefined) {
       queryValues.push(maxEmployees);
       whereExpressions.push(`num_employees <= $${queryValues.length}`);
     }
+
     if (name) {
       queryValues.push(`%${name}%`);
-      whereExpressions.push(`name ILIKE $${queryValues.lengtrh}`);
+      whereExpressions.push(`name ILIKE $${queryValues.length}`);
     }
 
     //if WHERE expressions exist add WHERE string and concat whereExpressions with AND in between
