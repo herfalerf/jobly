@@ -48,7 +48,6 @@ describe("POST /users", function () {
       token: expect.any(String),
     });
   });
-
   test("works for admin: create admin", async function () {
     const resp = await request(app)
       .post("/users")
@@ -73,7 +72,6 @@ describe("POST /users", function () {
       token: expect.any(String),
     });
   });
-
   test("does not work for user", async function () {
     const resp = await request(app)
       .post("/users")
@@ -88,7 +86,6 @@ describe("POST /users", function () {
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
-
   test("unauth for anon", async function () {
     const resp = await request(app).post("/users").send({
       username: "u-new",
@@ -100,7 +97,6 @@ describe("POST /users", function () {
     });
     expect(resp.statusCode).toEqual(401);
   });
-
   test("bad request if missing data", async function () {
     const resp = await request(app)
       .post("/users")
@@ -110,7 +106,6 @@ describe("POST /users", function () {
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(400);
   });
-
   test("bad request if invalid data", async function () {
     const resp = await request(app)
       .post("/users")
@@ -166,12 +161,10 @@ describe("GET /users", function () {
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
-
   test("unauth for anon", async function () {
     const resp = await request(app).get("/users");
     expect(resp.statusCode).toEqual(401);
   });
-
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---
     // thus making it hard to test that the error-handler works with it. This
@@ -215,19 +208,16 @@ describe("GET /users/:username", function () {
       },
     });
   });
-
   test("does not work for wrong user", async function () {
     const resp = await request(app)
       .get(`/users/u1`)
       .set("authorization", `Bearer ${u3Token}`);
     expect(resp.statusCode).toEqual(401);
   });
-
   test("unauth for anon", async function () {
     const resp = await request(app).get(`/users/u1`);
     expect(resp.statusCode).toEqual(401);
   });
-
   test("not found if user not found", async function () {
     const resp = await request(app)
       .get(`/users/nope`)
@@ -282,14 +272,12 @@ describe("PATCH /users/:username", () => {
       .set("authorization", `Bearer ${u3Token}`);
     expect(resp.statusCode).toEqual(401);
   });
-
   test("unauth for anon", async function () {
     const resp = await request(app).patch(`/users/u1`).send({
       firstName: "New",
     });
     expect(resp.statusCode).toEqual(401);
   });
-
   test("not found if no such user", async function () {
     const resp = await request(app)
       .patch(`/users/nope`)
@@ -299,7 +287,6 @@ describe("PATCH /users/:username", () => {
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(404);
   });
-
   test("bad request if invalid data", async function () {
     const resp = await request(app)
       .patch(`/users/u1`)
@@ -309,7 +296,6 @@ describe("PATCH /users/:username", () => {
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(400);
   });
-
   test("works: set new password", async function () {
     const resp = await request(app)
       .patch(`/users/u1`)
