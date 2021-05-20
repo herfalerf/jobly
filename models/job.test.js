@@ -91,6 +91,20 @@ describe("findAll", function () {
         equity: "0.02",
         companyHandle: "c3",
       },
+      {
+        id: testJobIds[3],
+        title: "j4",
+        salary: 90000,
+        equity: "0.03",
+        companyHandle: "c1",
+      },
+      {
+        id: testJobIds[4],
+        title: "j5",
+        salary: 100000,
+        equity: "0.04",
+        companyHandle: "c1",
+      },
     ]);
   });
 });
