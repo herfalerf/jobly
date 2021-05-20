@@ -122,17 +122,17 @@ describe("get", function () {
 //*************************update */
 
 describe("update", function () {
-  const updateData = {
+  let updateData = {
     title: "new",
     salary: 1,
-    equity: 0.5,
-    companyHandle: "c3",
+    equity: "0.5",
   };
 
   test("works", async function () {
-    let job = await Job.update("j1", updateData);
+    let job = await Job.update(testJobIds[0], updateData);
     expect(job).toEqual({
-      id: expect.any(Number),
+      id: testJobIds[0],
+      companyHandle: "c1",
       ...updateData,
     });
 
@@ -143,27 +143,27 @@ describe("update", function () {
     );
     expect(result.rows).toEqual([
       {
-        id: expect.any(Number),
+        id: testJobIds[0],
         title: "new",
         salary: 1,
-        equity: 0.5,
-        companyHandle: "c3",
+        equity: "0.5",
+        company_handle: "c1",
       },
     ]);
   });
 
   test("works: null fields", async function () {
-    const updateDataSetNulls = {
+    let updateDataSetNulls = {
       title: "new",
       salary: null,
       equity: null,
-      companyHandle: "c3",
     };
 
-    let job = await Job.update("j1", updateDataSetNulls);
+    let job = await Job.update(testJobIds[0], updateDataSetNulls);
     expect(job).toEqual({
-      id: expect.any(Number),
+      id: testJobIds[0],
       ...updateDataSetNulls,
+      companyHandle: "c1",
     });
 
     const result = await db.query(
@@ -173,18 +173,18 @@ describe("update", function () {
     );
     expect(result.rows).toEqual([
       {
-        id: expect.any(Number),
+        id: testJobIds[0],
         title: "new",
         salary: null,
         equity: null,
-        companyHandle: "c3",
+        company_handle: "c1",
       },
     ]);
   });
 
   test("not found if no such job", async function () {
     try {
-      await Job.update("nope", updateData);
+      await Job.update(0, updateData);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -193,7 +193,7 @@ describe("update", function () {
 
   test("bad request with no data", async function () {
     try {
-      await Job.update("j1", {});
+      await Job.update(testJobIds[0], {});
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -205,14 +205,14 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    await Job.remove("j1");
+    await Job.remove(testJobIds[0]);
     const res = await db.query("SELECT title FROM jobs WHERE title='j1'");
     expect(res.rows.length).toEqual(0);
   });
 
   test("not found if no such job", async function () {
     try {
-      await Job.remove("nope");
+      await Job.remove(0);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
